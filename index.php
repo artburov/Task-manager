@@ -1,4 +1,5 @@
 <?php
+
 $data = [
     [
         "image" => "img/no-user.jpg",
@@ -14,8 +15,8 @@ $data = [
         "text"  => "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aspernatur."
     ]
 ];
-?>
 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -96,7 +97,7 @@ $data = [
                         <div class="card-header"><h3>Оставить комментарий</h3></div>
 
                         <div class="card-body">
-                            <form action="/store" method="post">
+                            <form action="store.php" method="post">
                                 <div class="form-group">
                                     <label for="exampleFormControlTextarea1">Имя</label>
                                     <input name="name" class="form-control" id="exampleFormControlTextarea1"/>
@@ -109,6 +110,7 @@ $data = [
                                 <button type="submit" class="btn btn-success">Отправить</button>
                             </form>
                         </div>
+
                     </div>
                 </div>
             </div>
