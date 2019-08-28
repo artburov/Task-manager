@@ -1,6 +1,7 @@
 <?php
 
-$data = [
+//Old array structure
+/*$data = [
     [
         "image" => "img/no-user.jpg",
         "user"  => "John Doe",
@@ -14,7 +15,13 @@ $data = [
         "date"  => "11/12/2035",
         "text"  => "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aspernatur."
     ]
-];
+];*/
+
+$pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
+$sql = 'SELECT * FROM data';
+$statement = $pdo -> prepare( $sql );
+$statement -> execute();
+$data = $statement -> fetchAll( PDO::FETCH_ASSOC );
 
 ?>
 
@@ -77,6 +84,7 @@ $data = [
                                 Комментарий успешно добавлен
                             </div>
                             <?php foreach ( $data as $comment ) : ?>
+
                                 <div class="media">
                                     <img src="<?= $comment["image"]; ?>" class="mr-3" alt="..." width="64" height="64">
                                     <div class="media-body">
