@@ -20,7 +20,7 @@ session_start();
 ];*/
 
 $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
-$sql = 'SELECT * FROM data';
+$sql = 'SELECT * FROM data ORDER BY id DESC';
 $statement = $pdo -> prepare( $sql );
 $statement -> execute();
 $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
