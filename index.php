@@ -1,4 +1,6 @@
 <?php
+ini_set( 'error_reporting', E_ALL );
+session_start();
 
 //Old array structure
 /*$data = [
@@ -80,11 +82,13 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                         <div class="card-header"><h3>Комментарии</h3></div>
 
                         <div class="card-body">
+                            <?php if ( isset( $_SESSION['message'] ) ) : ?>
                             <div class="alert alert-success" role="alert">
-                                Комментарий успешно добавлен
+                                <? echo $_SESSION['message'];
+                                endif;
+                                unset( $_SESSION['message'] ); ?>
                             </div>
                             <?php foreach ( $data as $comment ) : ?>
-
                                 <div class="media">
                                     <img src="<?= $comment["image"]; ?>" class="mr-3" alt="..." width="64" height="64">
                                     <div class="media-body">
