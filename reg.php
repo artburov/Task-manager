@@ -41,6 +41,10 @@ if (ctype_space( $password )) {
     $_SESSION['message_password'] = 'Введен некорректный пароль';
     goto end;
 }
+if (strlen( $password ) < 6) {
+    $_SESSION['message_password'] = 'Пароль должен быть больше 6-ти символов';
+    goto end;
+}
 if ($password != $password_confirm) {
     $_SESSION['message_password'] = 'Пароль не совпадает';
     goto end;
