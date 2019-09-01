@@ -52,21 +52,35 @@ if ($password != $password_confirm) {
 
 //Prepared array for execute() instead bindParam()
 $registration = [
-    'name'              => $_POST['name'],
-    'email'             => $_POST['email'],
-    'password'          => $password_hash
+    'name'     => $_POST['name'],
+    'email'    => $_POST['email'],
+    'password' => $password_hash
 ];
 
-    $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
+/*Prepared SQL block to check email duplicate into DB*/
+$pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
+$sql_check = 'SELECT * FROM auth WHERE email=:email_duplicate';
+$sql_statement = $pdo -> prepare( $sql_check);
+$sql_statement->bindValue(':email_duplicate', $email);
+$sql_statement->execute();
+
+$sql_result =  $sql_statement -> fetch();
+//var_dump($sql_result==true);die;
+
+if ($sql_result) {
+    $_SESSION['message_email'] = 'Найден дубликат e-mail';
+    goto end;
+} else {
     $sql = "INSERT INTO auth (user, password, email) VALUES (:name, :password, :email)";
     $statement = $pdo -> prepare( $sql );
 
-//    $statement -> bindParam( "name", $name );
-//    $statement -> bindParam( "password", $password_hash );
-//    $statement -> bindParam( "email", $email );
-//    $result = $statement -> execute();
+/*    $statement -> bindParam( "name", $name );
+    $statement -> bindParam( "password", $password_hash );
+    $statement -> bindParam( "email", $email );
+    $result = $statement -> execute();*/
 
-    $result = $statement -> execute($registration);
+    $result = $statement -> execute( $registration );
+}
 
 end:
 
