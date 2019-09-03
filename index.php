@@ -2,22 +2,10 @@
 ini_set( 'error_reporting', E_ALL );
 session_start();
 
-//Old array structure
-/*$data = [
-    [
-        "image" => "img/no-user.jpg",
-        "user"  => "John Doe",
-        "date"  => "12/10/2025",
-        "text"  => "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aspernatur,
-                                        ullam doloremque deleniti, sequi obcaecati."
-    ],
-    [
-        "image" => "img/no-user.jpg",
-        "user"  => "Carl Doe",
-        "date"  => "11/12/2035",
-        "text"  => "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aspernatur."
-    ]
-];*/
+$auth_data = [
+    'user'  => $_SESSION['user'],
+    'email' => $_SESSION['email_valid']
+];
 
 $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
 $sql = 'SELECT * FROM data ORDER BY id DESC';
@@ -62,13 +50,21 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
 
                 <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ml-auto">
-                    <!-- Authentication Links -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="register.php">Register</a>
-                    </li>
+
+                    <?php if (isset( $auth_data['user'] )) { ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><?= $auth_data['user']; ?></a>
+                        </li>
+                    <? } else { ?>
+
+                        <!-- Authentication Links -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.php">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="register.php">Register</a>
+                        </li>
+                    <? } ?>
                 </ul>
             </div>
         </div>
@@ -82,12 +78,14 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                         <div class="card-header"><h3>Комментарии</h3></div>
 
                         <div class="card-body">
+
                             <!-- Success flash message -->
                             <?php if ( isset( $_SESSION['message'] ) ) : ?>
                             <div class="alert alert-success" role="alert">
                                 <? echo $_SESSION['message'];
                                 endif;
                                 unset( $_SESSION['message'] ); ?>
+
                                 <!-- Danger flash message -->
                                 <?php if ( isset ( $_SESSION['message_danger'] ) ) : ?>
                                 <div class="alert alert-danger" role="alert">
@@ -95,6 +93,7 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                                     endif;
                                     unset( $_SESSION['message_danger'] ); ?>
                                 </div>
+
                                 <!-- Loop shows all comments -->
                                 <?php foreach ( $data as $comment ) : ?>
                                     <div class="media">
@@ -119,10 +118,21 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
 
                             <div class="card-body">
                                 <form action="store.php" method="post">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlTextarea1">Имя</label>
-                                        <input name="name" class="form-control" id="exampleFormControlTextarea1"/>
-                                    </div>
+
+                                    <!--User name for comment-->
+                                    <?php if (isset( $auth_data['user'] )) { ?>
+                                        <div class="form-group">
+                                            <input type="hidden" name="name" value="<?= $auth_data['user']; ?>">
+                                        </div>
+                                    <? } else { ?>
+
+                                        <!--User name for comment if no session data exist-->
+                                        <div class="form-group">
+                                            <label for="exampleFormControlTextarea1">Имя</label>
+                                            <input name="name" class="form-control" id="exampleFormControlTextarea1"/>
+                                        </div>
+                                    <?php } ?>
+
                                     <div class="form-group">
                                         <label for="exampleFormControlTextarea1">Сообщение</label>
                                         <textarea name="text" class="form-control" id="exampleFormControlTextarea1"
