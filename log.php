@@ -3,12 +3,18 @@
 ini_set( 'error_reporting', E_ALL );
 session_start();
 
+//Hashing user's password by default bcrypt algorithm
+$password_hash = password_hash( $_POST['password'], PASSWORD_DEFAULT );
+
 $email = $_POST['email'];
 $password = $_POST['password'];
-
-//Hashing user's password by default bcrypt algorithm
-$password_hash = password_hash( $password, PASSWORD_DEFAULT );
-
+if (isset($_POST['remember'])) {
+    setcookie( "auth_cookie[email]", "$email", time() + 3600*24*7 );
+    setcookie( "auth_cookie[password]", "$password_hash", time() + 3600*24*7 );
+} else {
+    setcookie( "auth_cookie[email]", "" );
+    setcookie( "auth_cookie[password]", "" );
+}
 
 //Validate email address
 $email_validate = filter_var( "$email", FILTER_VALIDATE_EMAIL );

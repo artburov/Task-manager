@@ -2,11 +2,48 @@
 ini_set( 'error_reporting', E_ALL );
 session_start();
 
-$auth_data = [
-    'user'  => $_SESSION['user'],
-    'email' => $_SESSION['email_valid']
-];
+// ---> Debug section for Session and Cookies destroying mechanism
+//session_destroy();
+//SetCookie("auth_cookie[0]", "");
+//SetCookie("auth_cookie[1]","");
+//var_dump($_SESSION);
+//var_dump($_COOKIE['auth_cookie']['email']);
+//var_dump($_COOKIE['auth_cookie']['password']);die;
+//var_dump($_COOKIE);
 
+if ($_SESSION) {
+    $auth_data = [
+        'user'  => $_SESSION['user'],
+        'email' => $_SESSION['email_valid']
+    ];
+}
+
+if ( isset( $_COOKIE["auth_cookie"]["email"] ) ) {
+
+    $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
+    $sql = 'SELECT * FROM auth WHERE email = :email_exist; password = :password_exist';
+    $statement = $pdo -> prepare( $sql );
+
+    $statement -> bindValue( ':email_exist', $_COOKIE["auth_cookie"]["email"] );
+    $statement -> bindValue( ':password_exist', $_COOKIE["auth_cookie"]["password"] );
+
+    $statement -> execute();
+    $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
+}
+
+//IF no Session exists - user can be taken from DB when Cookies validation mechanism succeeded
+if (!isset($_SESSION)) {
+    session_start();
+    $auth_data = [
+            'user' => $data[0]['user']
+        ];
+}
+
+if (!$_SESSION and !$_COOKIE) {
+       header( "Location: /login.php" );
+};
+
+//Regular info extracting from DB
 $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
 $sql = 'SELECT * FROM data ORDER BY id DESC';
 $statement = $pdo -> prepare( $sql );
