@@ -2,15 +2,7 @@
 ini_set( 'error_reporting', E_ALL );
 session_start();
 
-// ---> Debug section for Session and Cookies destroying mechanism
-//session_destroy();
-//SetCookie("auth_cookie[0]", "");
-//SetCookie("auth_cookie[1]","");
-//var_dump($_SESSION);
-//var_dump($_COOKIE['auth_cookie']['email']);
-//var_dump($_COOKIE['auth_cookie']['password']);die;
-//var_dump($_COOKIE);
-
+//Validating authorisation via Session
 if ($_SESSION) {
     $auth_data = [
         'user'  => $_SESSION['user'],
@@ -18,6 +10,7 @@ if ($_SESSION) {
     ];
 }
 
+//Validating authorisation via Cppkie
 if (isset( $_COOKIE["auth_cookie"]["email"] )) {
 
     $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
@@ -37,10 +30,6 @@ if (isset( $_COOKIE["auth_cookie"]["email"] )) {
         ];
     }
 }
-
-if (!$_SESSION and !isset($_COOKIE["auth_cookie"]["email"])) {
-    header( "Location: /login.php" );
-};
 
 //Regular info extracting from DB
 $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
@@ -88,7 +77,8 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                     <?php if (isset( $auth_data['user'] )) { ?>
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"><?= $auth_data['user']; ?></a>
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                               role="button"><?= $auth_data['user']; ?></a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">Профиль</a>
                                 <div class="dropdown-divider"></div>
@@ -150,47 +140,61 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                                     </div>
                                 <?php endforeach; ?>
                             </div>
+                            <!--Warning message about authorisation need before comment-->
+                            <?php if ( !$_SESSION and !isset( $_COOKIE["auth_cookie"]["email"] ) ) { ?>
+                            <div class="alert alert-primary" style="margin-top: 20px; role=" alert
+                            ">
+                            Чтобы оставить комментарий <a href="login.php" class="href">авторизуйтесь</a>
                         </div>
+                        <?php } ?>
                     </div>
 
-                    <div class="col-md-12" style="margin-top: 20px;">
-                        <div class="card">
-                            <div class="card-header"><h3>Оставить комментарий</h3></div>
+                </div>
 
-                            <div class="card-body">
-                                <form action="store.php" method="post">
+                <div class="col-md-12" style="margin-top: 20px;">
+                    <div class="card">
+                        <div class="card-header"><h3>Оставить комментарий</h3></div>
 
-                                    <!--User name for comment-->
-                                    <?php if (isset( $auth_data['user'] )) { ?>
-                                        <div class="form-group">
-                                            <input type="hidden" name="name" value="<?= $auth_data['user']; ?>">
-                                        </div>
-                                    <? } else { ?>
+                        <div class="card-body">
+                            <form action="store.php" method="post">
 
-                                        <!--User name for comment if no session data exist-->
-                                        <div class="form-group">
-                                            <label for="exampleFormControlTextarea1">Имя</label>
-                                            <input name="name" class="form-control" id="exampleFormControlTextarea1"/>
-                                        </div>
-                                    <?php } ?>
-
+                                <!--User name for comment-->
+                                <?php if (isset( $auth_data['user'] )) { ?>
                                     <div class="form-group">
-                                        <label for="exampleFormControlTextarea1">Сообщение</label>
-                                        <textarea name="text" class="form-control" id="exampleFormControlTextarea1"
-                                                  rows="3"></textarea>
+                                        <input type="hidden" name="name" value="<?= $auth_data['user']; ?>">
                                     </div>
-                                    <button type="submit" class="btn btn-success">Отправить</button>
-                                </form>
-                            </div>
+                                <? } else { ?>
 
+                                    <!--User name for comment if no session data exist-->
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextarea1">Имя</label>
+                                        <input name="name" class="form-control" id="exampleFormControlTextarea1"/>
+                                    </div>
+                                <?php } ?>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlTextarea1">Сообщение</label>
+                                    <textarea name="text" class="form-control" id="exampleFormControlTextarea1"
+                                              rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success">Отправить</button>
+                            </form>
                         </div>
+
                     </div>
                 </div>
             </div>
+        </div>
     </main>
 </div>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
