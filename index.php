@@ -10,7 +10,7 @@ if ($_SESSION) {
     ];
 }
 
-//Validating authorisation via Cppkie
+//Validating authorisation via Cookie
 if (isset( $_COOKIE["auth_cookie"]["email"] )) {
 
     $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
@@ -149,38 +149,40 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                         <?php } ?>
                     </div>
 
-                </div>
+                    <div class="col-md-12" style="margin-top: 4px;">
+                        <div class="card">
+                            <div class="card-header"><h3>Оставить комментарий</h3></div>
 
-                <div class="col-md-12" style="margin-top: 20px;">
-                    <div class="card">
-                        <div class="card-header"><h3>Оставить комментарий</h3></div>
+                            <div class="card-body">
+                                <form action="store.php" method="post">
 
-                        <div class="card-body">
-                            <form action="store.php" method="post">
+                                    <!--User name for comment-->
+                                    <?php if (isset( $auth_data['user'] )) { ?>
+                                        <div class="form-group">
+                                            <input type="hidden" name="name" value="<?= $auth_data['user']; ?>">
+                                        </div>
+                                    <? } else { ?>
 
-                                <!--User name for comment-->
-                                <?php if (isset( $auth_data['user'] )) { ?>
+                                        <!--User name for comment if no session data exist-->
+                                        <div class="form-group">
+                                            <label for="exampleFormControlTextarea1">Имя</label>
+                                            <input name="name" class="form-control" id="exampleFormControlTextarea1"/>
+                                        </div>
+                                    <?php } ?>
+
                                     <div class="form-group">
-                                        <input type="hidden" name="name" value="<?= $auth_data['user']; ?>">
+                                        <label for="exampleFormControlTextarea1">Сообщение</label>
+                                        <textarea name="text" class="form-control" id="exampleFormControlTextarea1"
+                                                  rows="3"></textarea>
                                     </div>
-                                <? } else { ?>
-
-                                    <!--User name for comment if no session data exist-->
-                                    <div class="form-group">
-                                        <label for="exampleFormControlTextarea1">Имя</label>
-                                        <input name="name" class="form-control" id="exampleFormControlTextarea1"/>
-                                    </div>
-                                <?php } ?>
-
-                                <div class="form-group">
-                                    <label for="exampleFormControlTextarea1">Сообщение</label>
-                                    <textarea name="text" class="form-control" id="exampleFormControlTextarea1"
-                                              rows="3"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-success">Отправить</button>
-                            </form>
+                                    <?php if (isset( $auth_data['user'] )) { ?>
+                                        <button type="submit" class="btn btn-success">Отправить</button>
+                                    <?php } else { ?>
+                                        <button type="button" class="btn btn-danger" onclick="window.location.href='/login.php'">Авторизуйтесь</button>
+                                    <?php } ?>
+                                </form>
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
