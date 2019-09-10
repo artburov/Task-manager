@@ -183,23 +183,47 @@ if (isset( $_SESSION['image_dir'] )) {
                         <div class="card-header"><h3>Безопасность</h3></div>
 
                         <div class="card-body">
-                            <div class="alert alert-success" role="alert">
-                                Пароль успешно обновлен
-                            </div>
+                            <?php if (isset( $_SESSION['message_done'] )) { ?>
+                                <div class="alert alert-success" role="alert">
+                                    <?= $_SESSION['message_done']; ?>
+                                    <?php unset( $_SESSION['message_done'] ); ?>
+                                </div>
+                            <?php } ?>
 
-                            <form action="/profile/password" method="post">
+                            <form action="/password.php" method="post">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="form-group">
                                             <label for="exampleFormControlInput1">Current password</label>
-                                            <input type="password" name="current" class="form-control"
-                                                   id="exampleFormControlInput1">
+
+                                            <?php if (isset( $_SESSION['login_password_change'] )) { ?>
+                                                <input type="password" name="current" class="form-control is-invalid"
+                                                       id="exampleFormControlInput1">
+                                                <span class="text text-danger">
+                                                    <?= $_SESSION['login_password_change']; ?>
+                                                </span>
+                                                <?php unset( $_SESSION['login_password_change'] ); ?>
+                                            <?php } else { ?>
+
+                                                <input type="password" name="current" class="form-control"
+                                                       id="exampleFormControlInput1">
+                                            <? } ?>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="exampleFormControlInput1">New password</label>
-                                            <input type="password" name="password" class="form-control"
-                                                   id="exampleFormControlInput1">
+
+                                            <?php if (isset( $_SESSION['password_change'] )) { ?>
+                                                <input type="password" name="password" class="form-control is-invalid"
+                                                       id="exampleFormControlInput1" autofocus>
+                                                <span class="text text-danger">
+                                                    <?= $_SESSION['password_change']; ?>
+                                                </span>
+                                                <?php unset( $_SESSION['password_change'] ); ?>
+                                            <? } else { ?>
+                                                <input type="password" name="password" class="form-control"
+                                                       id="exampleFormControlInput1">
+                                            <? } ?>
                                         </div>
 
                                         <div class="form-group">
