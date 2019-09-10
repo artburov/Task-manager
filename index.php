@@ -80,7 +80,7 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
                                role="button"><?= $auth_data['user']; ?></a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Профиль</a>
+                                <a class="dropdown-item" href="/profile.php">Профиль</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="/logout.php">Выход</a>
                             </div>

@@ -15,6 +15,8 @@ $password_hash = password_hash( $password, PASSWORD_DEFAULT );
 $email_validate = filter_var( "$email", FILTER_VALIDATE_EMAIL );
 
 
+$url_case = 'register.php';
+
 if (empty( $name )) {
     $_SESSION['message_name'] = 'Отсутствует имя';
     goto end;
@@ -80,8 +82,11 @@ if ($sql_result) {
     $result = $statement -> execute();*/
 
     $result = $statement -> execute( $registration );
+    $url_case = 'login.php';
+    goto end;
+
 }
 
 end:
 
-header( "Location: /register.php" );
+header( "Location: /$url_case" );

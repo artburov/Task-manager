@@ -51,7 +51,7 @@ $authentication = [
     'password' => $password_hash
 ];
 
-/*Prepared SQL block to check email duplicate into DB*/
+/*Validate email and password*/
 $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
 $email_check = 'SELECT * FROM auth WHERE email = :email_exist; password = :password_exist';
 $sql_statement = $pdo -> prepare( $email_check );
@@ -61,9 +61,7 @@ $sql_statement -> bindValue( ':password_exist', $authentication['password'] );
 
 $sql_statement -> execute();
 
-
 $sql_result = $sql_statement -> fetchAll( PDO::FETCH_ASSOC );
-
 if (!$sql_result) {
     $_SESSION['login_email'] = 'E-mail не найден';
     goto end;
@@ -75,7 +73,7 @@ if (!password_verify( $password, $sql_result[0]['password'] )) {
 }
 
 if ($sql_result) {
-
+    $_SESSION['id'] = $sql_result[0]['id'];
     $_SESSION['user'] = $sql_result[0]['user'];
     $_SESSION['email_valid'] = $authentication['email'];
     $_SESSION['password_valid'] = $authentication['password'];
