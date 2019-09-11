@@ -33,7 +33,7 @@ if (isset( $_COOKIE["auth_cookie"]["email"] )) {
 
 //Regular info extracting from DB
 $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
-$sql = 'SELECT * FROM data ORDER BY id DESC';
+$sql = 'SELECT * FROM data WHERE hidden = "0" ORDER BY id DESC';
 $statement = $pdo -> prepare( $sql );
 $statement -> execute();
 $data = $statement -> fetchAll( PDO::FETCH_ASSOC );

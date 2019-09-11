@@ -25,14 +25,16 @@ $sql_statement -> execute();
 
 $sql_result = $sql_statement -> fetchAll( PDO::FETCH_ASSOC );
 
+if (empty( $password['password'] )) {
+//    $_SESSION['password_change'] = 'Отсутствует пароль';
+    goto end;
+}
+
 if (!password_verify( $password['current'], $sql_result[0]['password'] )) {
     $_SESSION['login_password_change'] = 'Пароль неверный';
     goto end;
 }
-if (empty( $password['password'] )) {
-    $_SESSION['password_change'] = 'Отсутствует пароль';
-    goto end;
-}
+
 if (ctype_space( $password['password'] )) {
     $_SESSION['password_change'] = 'Введен некорректный пароль';
     goto end;
