@@ -9,7 +9,7 @@ if ($_SESSION) {
         'email' => $_SESSION['email_valid']
     ];
 }
-//var_dump($_SESSION);die;
+
 $id_fromDB = $_SESSION['id'];
 
 //Получение из базы по ID пути для картинки и передача его в сессию
@@ -157,19 +157,21 @@ if (isset( $_SESSION['image_dir'] )) {
                                                    id="exampleFormControlInput1">
                                         </div>
                                     </div>
-                                    <?php if (!empty( $_SESSION ['avatar_image'] )) { ?>
+                                    <?php if (!empty( $image_avatar)) { ?>
                                         <div class="col-md-4">
                                             <img src="<?= $image_avatar ?>" alt="" class="img-fluid">
                                         </div>
-                                    <?php } elseif (empty( $_SESSION ['avatar_image'] )) { ?>
+                                    <?php } elseif (empty( $avatar_image )) { ?>
                                         <div class="col-md-4">
                                             <img src="img/no-user.jpg" alt="" class="img-fluid">
                                         </div>
                                     <?php } ?>
 
-                                    <div class="col-md-12">
-                                        <button type="submit" class="btn btn-warning">Edit profile</button>
-
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-warning">Save profile</button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary" onClick="window.location.reload();" >Refresh Data</button>
                                     </div>
                                 </div>
                             </form>
