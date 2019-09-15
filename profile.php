@@ -125,18 +125,18 @@ if (isset( $_SESSION['image_dir'] )) {
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="form-group">
-                                            <label for="exampleFormControlInput1">Name</label>
+                                            <label for="name_control">Name</label>
                                             <input type="text" class="form-control" name="name"
-                                                   id="exampleFormControlInput1" value="<?= $auth_data['user']; ?>"
+                                                   id="name_control" value="<?= $auth_data['user']; ?>"
                                                    readonly>
 
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="exampleFormControlInput1">Email</label>
+                                            <label for="email_control">Email</label>
                                             <?php if (isset( $_SESSION['message_email'] )) { ?>
                                                 <input type="email" class="form-control is-invalid" name="email"
-                                                       id="exampleFormControlInput1"
+                                                       id="email_control"
                                                        value="<?= $auth_data['email']; ?>">
                                                 <span class="text text-danger">
                                                     <?= $_SESSION['message_email']; ?>
@@ -145,16 +145,16 @@ if (isset( $_SESSION['image_dir'] )) {
                                             <?php } else { ?>
 
                                                 <input type="email" class="form-control" name="email"
-                                                       id="exampleFormControlInput1"
+                                                       id="email_control"
                                                        value="<?= $auth_data['email']; ?>">
                                             <?php } ?>
 
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="exampleFormControlInput1">Аватар</label>
+                                            <label for="avatar_control">Аватар</label>
                                             <input type="file" class="form-control" name="image"
-                                                   id="exampleFormControlInput1">
+                                                   id="avatar_control">
                                         </div>
                                     </div>
                                     <?php if (!empty( $image_avatar)) { ?>
@@ -167,12 +167,18 @@ if (isset( $_SESSION['image_dir'] )) {
                                         </div>
                                     <?php } ?>
 
-                                    <div class="col-md-2">
+                                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                    <div class="btn-group ml-3 mr-2" role="group" aria-label="Save group button">
                                         <button type="submit" class="btn btn-warning">Save profile</button>
                                     </div>
-                                    <div class="col-md-2">
-                                        <button type="submit" class="btn btn-primary" onClick="window.location.reload();" >Refresh Data</button>
+                                    <div class="btn-group" role="group" aria-label="Refresh group button">
+                                        <?php if(isset($_SESSION['image_dir'])) {?>
+                                        <button type="button" class="btn btn-success" onClick="window.location.reload();" id="refresh_btn" >Refresh Data</button>
+                                            <?php unset($_SESSION['image_dir']); ?>
+                                        <?php } ?>
                                     </div>
+                                    </div>
+
                                 </div>
                             </form>
                         </div>
@@ -196,11 +202,11 @@ if (isset( $_SESSION['image_dir'] )) {
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="form-group">
-                                            <label for="exampleFormControlInput1">Current password</label>
+                                            <label for="current_password">Current password</label>
 
                                             <?php if (isset( $_SESSION['login_password_change'] )) { ?>
                                                 <input type="password" name="current" class="form-control is-invalid"
-                                                       id="exampleFormControlInput1">
+                                                       id="current_password">
                                                 <span class="text text-danger">
                                                     <?= $_SESSION['login_password_change']; ?>
                                                 </span>
@@ -208,30 +214,30 @@ if (isset( $_SESSION['image_dir'] )) {
                                             <?php } else { ?>
 
                                                 <input type="password" name="current" class="form-control"
-                                                       id="exampleFormControlInput1">
+                                                       id="current_password">
                                             <? } ?>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="exampleFormControlInput1">New password</label>
+                                            <label for="new_password">New password</label>
 
                                             <?php if (isset( $_SESSION['password_change'] )) { ?>
                                                 <input type="password" name="password" class="form-control is-invalid"
-                                                       id="exampleFormControlInput1" autofocus>
+                                                       id="new_password" autofocus>
                                                 <span class="text text-danger">
                                                     <?= $_SESSION['password_change']; ?>
                                                 </span>
                                                 <?php unset( $_SESSION['password_change'] ); ?>
                                             <? } else { ?>
                                                 <input type="password" name="password" class="form-control"
-                                                       id="exampleFormControlInput1">
+                                                       id="new_password">
                                             <? } ?>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="exampleFormControlInput1">Password confirmation</label>
+                                            <label for="password_confirmation">Password confirmation</label>
                                             <input type="password" name="password_confirmation" class="form-control"
-                                                   id="exampleFormControlInput1">
+                                                   id="password_confirmation">
                                         </div>
 
                                         <button class="btn btn-success">Submit</button>

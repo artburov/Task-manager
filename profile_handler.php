@@ -39,10 +39,8 @@ if ($_FILES['image']['error'] == 0) {
 }
 
 
-
-
 if ($_FILES['image']['error'] == 4) {
-
+// если не обновлялось изображение
 }
 
 //Validate email address
