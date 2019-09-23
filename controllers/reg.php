@@ -1,7 +1,6 @@
 <?php
-
-ini_set( 'error_reporting', E_ALL );
-session_start();
+include __DIR__ . "/../functions/session_begin.php";
+$db = include __DIR__ . "/../database/start.php";
 
 $name = $_POST['name'];
 $email = $_POST['email'];
@@ -15,7 +14,7 @@ $password_hash = password_hash( $password, PASSWORD_DEFAULT );
 $email_validate = filter_var( "$email", FILTER_VALIDATE_EMAIL );
 
 
-$url_case = 'register.php';
+$url_case = 'registration';
 
 if (empty( $name )) {
     $_SESSION['message_name'] = 'Отсутствует имя';
@@ -52,39 +51,28 @@ if ($password != $password_confirm) {
     goto end;
 }
 
-//Prepared array for execute() instead bindParam()
+//Prepared array from POST and hash
 $registration = [
     'name'     => $_POST['name'],
     'email'    => $_POST['email'],
+    'image'    => $_POST['first_avatar_img'],
     'password' => $password_hash
 ];
 
 /*Prepared SQL block to check email duplicate into DB*/
-$pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
-$sql_check = 'SELECT * FROM auth WHERE email=:email_duplicate';
-$sql_statement = $pdo -> prepare( $sql_check);
-$sql_statement->bindValue(':email_duplicate', $email);
-$sql_statement->execute();
+$reg_email_duplicate = $db -> checkDuplicateEmail( 'auth', $registration['email'] );
 
-$sql_result =  $sql_statement -> fetch();
-//var_dump($sql_result==true);die;
-
-if ($sql_result) {
+if ($reg_email_duplicate) {
     $_SESSION['message_email'] = 'Найден дубликат e-mail';
     goto end;
 } else {
-    $sql = "INSERT INTO auth (user, password, email) VALUES (:name, :password, :email)";
-    $statement = $pdo -> prepare( $sql );
+    $db -> noDuplicateEmail( 'auth',
+        $registration['name'],
+        $registration['password'],
+        $registration['email'],
+        $registration['image'] );
 
-/*    $statement -> bindParam( "name", $name );
-    $statement -> bindParam( "password", $password_hash );
-    $statement -> bindParam( "email", $email );
-    $result = $statement -> execute();*/
-
-    $result = $statement -> execute( $registration );
-    $url_case = 'login.php';
-    goto end;
-
+    $url_case = 'login';
 }
 
 end:

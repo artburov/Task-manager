@@ -1,8 +1,3 @@
-<?php
-ini_set( 'error_reporting', E_ALL );
-session_start();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,13 +8,13 @@ session_start();
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <!-- Styles -->
-    <link href="css/app.css" rel="stylesheet">
+    <link href="../css/app.css" rel="stylesheet">
 </head>
 <body>
 <div id="app">
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="index.php">
+            <a class="navbar-brand" href="/">
                 Project
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -34,10 +29,10 @@ session_start();
                 <ul class="navbar-nav ml-auto">
                     <!-- Authentication Links -->
                     <li class="nav-item">
-                        <a class="nav-link" href="login.php">Login</a>
+                        <a class="nav-link" href="/login">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="register.php">Register</a>
+                        <a class="nav-link" href="/registration">Register</a>
                     </li>
                 </ul>
             </div>
@@ -50,7 +45,7 @@ session_start();
                     <div class="card">
                         <div class="card-header">Register</div>
                         <div class="card-body">
-                            <form method="POST" action="reg.php">
+                            <form method="POST" action="../controllers/reg.php">
 
                                 <!--Name field validation-->
                                 <div class="form-group row">
@@ -108,7 +103,6 @@ session_start();
                                             <input id="password" type="password"
                                                    class="form-control @error('password') is-invalid @enderror"
                                                    name="password">
-
                                             <span class="invalid-feedback" role="alert">
                                                     <strong><?php echo $_SESSION['message_password']; ?></strong>
                                                 </span>
@@ -134,6 +128,9 @@ session_start();
                                 <div class="form-group row mb-0">
                                     <div class="col-md-6 offset-md-4">
                                         <button type="submit" class="btn btn-primary">
+                                            <!--Through hidden field sent default avatar image-->
+                                            <input id="first_avatar_img" type="hidden" name="first_avatar_img"
+                                                   value="img/no-user.jpg">
                                             Register
                                         </button>
                                     </div>

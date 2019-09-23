@@ -1,9 +1,3 @@
-<?php
-ini_set( 'error_reporting', E_ALL );
-session_start();
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,13 +11,13 @@ session_start();
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="css/app.css" rel="stylesheet">
+    <link href="../css/app.css" rel="stylesheet">
 </head>
 <body>
 <div id="app">
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="index.php">
+            <a class="navbar-brand" href="/">
                 Project
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -41,10 +35,10 @@ session_start();
                 <ul class="navbar-nav ml-auto">
                     <!-- Authentication Links -->
                     <li class="nav-item">
-                        <a class="nav-link" href="login.php">Login</a>
+                        <a class="nav-link" href="/login">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="register.php">Register</a>
+                        <a class="nav-link" href="/registration">Register</a>
                     </li>
                 </ul>
             </div>
@@ -59,7 +53,7 @@ session_start();
                         <div class="card-header">Login</div>
 
                         <div class="card-body">
-                            <form method="POST" action="log.php">
+                            <form method="POST" action="../controllers/log_in.php">
 
                                 <div class="form-group row">
                                     <label for="email" class="col-md-4 col-form-label text-md-right">E-Mail

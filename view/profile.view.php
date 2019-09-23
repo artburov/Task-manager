@@ -1,48 +1,3 @@
-<?php
-ini_set( 'error_reporting', E_ALL );
-session_start();
-
-//Validating authorisation via Session
-if ($_SESSION) {
-    $auth_data = [
-        'user'  => $_SESSION['user'],
-        'email' => $_SESSION['email_valid']
-    ];
-}
-
-$id_fromDB = $_SESSION['id'];
-
-//Получение из базы по ID пути для картинки и передача его в сессию
-$pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
-$sql = 'SELECT * FROM auth WHERE id = ' . $id_fromDB . ' ';
-$statement = $pdo -> prepare( $sql );
-$statement -> execute();
-$data = $statement -> fetchAll( PDO::FETCH_ASSOC );
-
-//Image link from DB to Session
-$image_avatar = $data[0]['image'];
-$_SESSION['avatar_image'] = $image_avatar;
-
-
-//Если есть в директории сервера изображение, то отпраить его путь в БД
-if (isset( $_SESSION['image_dir'] )) {
-
-    $image_dir = $_SESSION['image_dir'];
-
-    $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
-    $sql = 'UPDATE auth SET image = :image_exist WHERE id = :user_id';
-    $statement = $pdo -> prepare( $sql );
-
-    $statement -> bindValue( ':image_exist', $image_dir );
-    $statement -> bindValue( ':user_id', $id_fromDB );
-
-    $statement -> execute();
-    $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
-
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,13 +11,13 @@ if (isset( $_SESSION['image_dir'] )) {
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="css/app.css" rel="stylesheet">
+    <link href="../css/app.css" rel="stylesheet">
 </head>
 <body>
 <div id="app">
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="/index.php">
+            <a class="navbar-brand" href="/">
                 Project
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -85,9 +40,9 @@ if (isset( $_SESSION['image_dir'] )) {
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
                                role="button"><?= $auth_data['user']; ?></a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/profile.php">Профиль</a>
+                                <a class="dropdown-item" href="/profile">Профиль</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="/logout.php">Выход</a>
+                                <a class="dropdown-item" href="/controllers/log_out.php">Выход</a>
                             </div>
                         </li>
 
@@ -95,10 +50,10 @@ if (isset( $_SESSION['image_dir'] )) {
 
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <a class="nav-link" href="login.php">Login</a>
+                            <a class="nav-link" href="/login">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="register.php">Register</a>
+                            <a class="nav-link" href="../controllers/register.php">Register</a>
                         </li>
                     <? } ?>
                 </ul>
@@ -121,7 +76,7 @@ if (isset( $_SESSION['image_dir'] )) {
                                 </div>
                             <?php } ?>
 
-                            <form action="profile_handler.php" method="post" enctype="multipart/form-data">
+                            <form action="../controllers/profile_handler.php" method="post" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="form-group">
@@ -146,7 +101,7 @@ if (isset( $_SESSION['image_dir'] )) {
 
                                                 <input type="email" class="form-control" name="email"
                                                        id="email_control"
-                                                       value="<?= $auth_data['email']; ?>">
+                                                       value="" placeholder="<?= $auth_data['email']; ?>">
                                             <?php } ?>
 
                                         </div>
@@ -157,26 +112,27 @@ if (isset( $_SESSION['image_dir'] )) {
                                                    id="avatar_control">
                                         </div>
                                     </div>
-                                    <?php if (!empty( $image_avatar)) { ?>
+<!--                                    --><?php //var_dump($image_avatar);die; ?>
+                                    <?php if (!empty( $_SESSION['avatar_image'])) { ?>
                                         <div class="col-md-4">
-                                            <img src="<?= $image_avatar ?>" alt="" class="img-fluid">
+                                            <img src="<?= $_SESSION['avatar_image'] ?>" alt="" class="img-fluid">
                                         </div>
-                                    <?php } elseif (empty( $avatar_image )) { ?>
+                                    <?php } elseif (empty( $_SESSION['avatar_image'] )) { ?>
                                         <div class="col-md-4">
-                                            <img src="img/no-user.jpg" alt="" class="img-fluid">
+                                            <img src="../img/no-user.jpg" alt="" class="img-fluid">
                                         </div>
                                     <?php } ?>
 
                                     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                                    <div class="btn-group ml-3 mr-2" role="group" aria-label="Save group button">
-                                        <button type="submit" class="btn btn-warning">Save profile</button>
-                                    </div>
-                                    <div class="btn-group" role="group" aria-label="Refresh group button">
-                                        <?php if(isset($_SESSION['image_dir'])) {?>
-                                        <button type="button" class="btn btn-success" onClick="window.location.reload();" id="refresh_btn" >Refresh Data</button>
-                                            <?php unset($_SESSION['image_dir']); ?>
-                                        <?php } ?>
-                                    </div>
+                                        <div class="btn-group ml-3 mr-2" role="group" aria-label="Save group button">
+                                            <button type="submit" class="btn btn-warning">Save profile</button>
+                                        </div>
+                                       <!-- <div class="btn-group" role="group" aria-label="Refresh group button">
+                                            <?php /*if(isset($_SESSION['image_dir'])) {*/?>
+                                                <button type="button" class="btn btn-success" onClick="window.location.reload();" id="refresh_btn" >Refresh Avatar</button>
+                                                <?php /*unset($_SESSION['image_dir']); */?>
+                                            <?php /*} */?>
+                                        </div>-->
                                     </div>
 
                                 </div>
@@ -198,7 +154,7 @@ if (isset( $_SESSION['image_dir'] )) {
                                 </div>
                             <?php } ?>
 
-                            <form action="/password.php" method="post">
+                            <form action="/controllers/password.php" method="post">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="form-group">
@@ -261,7 +217,5 @@ if (isset( $_SESSION['image_dir'] )) {
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-
 </body>
 </html>
-

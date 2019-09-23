@@ -1,45 +1,3 @@
-<?php
-ini_set( 'error_reporting', E_ALL );
-session_start();
-
-//Validating authorisation via Session
-if ($_SESSION) {
-    $auth_data = [
-        'user'  => $_SESSION['user'],
-        'email' => $_SESSION['email_valid']
-    ];
-}
-
-//Validating authorisation via Cookie
-if (isset( $_COOKIE["auth_cookie"]["email"] )) {
-
-    $pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
-    $sql = 'SELECT * FROM auth WHERE email = :email_exist; password = :password_exist';
-    $statement = $pdo -> prepare( $sql );
-
-    $statement -> bindValue( ':email_exist', $_COOKIE["auth_cookie"]["email"] );
-    $statement -> bindValue( ':password_exist', $_COOKIE["auth_cookie"]["password"] );
-
-    $statement -> execute();
-    $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
-
-    //IF no Session exists - user can be taken from DB when Cookies validation mechanism succeeded
-    if (!$_SESSION) {
-        $auth_data = [
-            'user' => $data[0]['user']
-        ];
-    }
-}
-
-//Regular info extracting from DB
-$pdo = new PDO( "mysql:host=localhost; dbname=tasks", "root", "" );
-$sql = 'SELECT * FROM data WHERE hidden = "0" ORDER BY id DESC';
-$statement = $pdo -> prepare( $sql );
-$statement -> execute();
-$data = $statement -> fetchAll( PDO::FETCH_ASSOC );
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,14 +10,14 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="css/app.css" rel="stylesheet">
+    <link href="../css/app.css" rel="stylesheet">
 
 </head>
 <body>
 <div id="app">
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="index.php">
+            <a class="navbar-brand" href="/">
                 Project
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -80,9 +38,9 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
                                role="button"><?= $auth_data['user']; ?></a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/profile.php">Профиль</a>
+                                <a class="dropdown-item" href="/profile">Профиль</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="/logout.php">Выход</a>
+                                <a class="dropdown-item" href="/controllers/log_out.php">Выход</a>
                             </div>
                         </li>
 
@@ -90,10 +48,10 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
 
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <a class="nav-link" href="login.php">Login</a>
+                            <a class="nav-link" href="../controllers/login.php">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="register.php">Register</a>
+                            <a class="nav-link" href="../controllers/register.php">Register</a>
                         </li>
                     <? } ?>
                 </ul>
@@ -126,9 +84,14 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                                 </div>
 
                                 <!-- Loop shows all comments -->
-                                <?php foreach ( $data as $comment ) : ?>
+                                <?php foreach ( $posts as $comment ): ?>
                                     <div class="media">
-                                        <img src="<?= $comment["image"]; ?>" class="mr-3" alt="..." width="64"
+                                        <img src="
+                                        <? if (file_exists( __DIR__ . "/../" . $comment["image"] )) {
+                                            echo $comment["image"];
+                                        } else {
+                                            echo 'img/no-user.jpg';
+                                        } ?> " class="mr-3" alt="..." width="64"
                                              height="64">
                                         <div class="media-body">
                                             <h5 class="mt-0"><?= $comment["user"]; ?></h5>
@@ -144,7 +107,7 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                             <?php if ( !$_SESSION and !isset( $_COOKIE["auth_cookie"]["email"] ) ) { ?>
                             <div class="alert alert-primary" style="margin-top: 20px; role=" alert
                             ">
-                            Чтобы оставить комментарий <a href="login.php" class="href">авторизуйтесь</a>
+                            Чтобы оставить комментарий <a href="/login" class="href">авторизуйтесь</a>
                         </div>
                         <?php } ?>
                     </div>
@@ -154,7 +117,7 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                             <div class="card-header"><h3>Оставить комментарий</h3></div>
 
                             <div class="card-body">
-                                <form action="store.php" method="post">
+                                <form action="../controllers/store.php" method="post">
 
                                     <!--User name for comment-->
                                     <?php if (isset( $auth_data['user'] )) { ?>
@@ -178,7 +141,9 @@ $data = $statement -> fetchAll( PDO::FETCH_ASSOC );
                                     <?php if (isset( $auth_data['user'] )) { ?>
                                         <button type="submit" class="btn btn-success">Отправить</button>
                                     <?php } else { ?>
-                                        <button type="button" class="btn btn-danger" onclick="window.location.href='/login.php'">Авторизуйтесь</button>
+                                        <button type="button" class="btn btn-danger"
+                                                onclick="window.location.href='/login'">Авторизуйтесь
+                                        </button>
                                     <?php } ?>
                                 </form>
                             </div>
