@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="../css/app.css" rel="stylesheet">
+    <link href="../public/css/app.css" rel="stylesheet">
 </head>
 <body>
 <div id="app">
@@ -119,7 +119,7 @@
                                         </div>
                                     <?php } elseif (empty( $_SESSION['avatar_image'] )) { ?>
                                         <div class="col-md-4">
-                                            <img src="../img/no-user.jpg" alt="" class="img-fluid">
+                                            <img src="img/no-user.jpg" alt="" class="img-fluid">
                                         </div>
                                     <?php } ?>
 

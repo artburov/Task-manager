@@ -39,14 +39,14 @@ if ($_FILES['image']['error'] == 0) {
     }
 
     //Перемещает загруженный файл в необходимую папку по полному пути проекта
-    $image_path_DB = __DIR__ . "/../avatar/";
+    $image_path_DB = __DIR__ . "/../public/avatar/";
     ImageManager ::moveUploadedImageFile( $_SESSION['image_tmp_name'],
         $image_path_DB . $full_uniq_image_name );
 
     //Путь на локальном сервере к изображению аватара, передается дальше в БД
     //Выполняется обрезание части полного пути к файлу до названия папки с изображением
     $shorted_path = $image_path_DB . $full_uniq_image_name;
-    $cutImg_path = ImageManager ::cutImagePathForDB( $shorted_path, "avatar" );
+    $cutImg_path = ImageManager ::cutImagePathForDB( $shorted_path, "public" );
     $_SESSION['image_dir'] = $cutImg_path;
 
 }
